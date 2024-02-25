@@ -33,7 +33,13 @@ to get the list.
 project list
 ------------
 
+local:
+
 - wakapi -- open source alternative to wakatime (coding stats)
+
+server:
+
+- snapdrop -- like airdrop, but F/OSS & cross-platform
 
 
 not included here
