@@ -1,0 +1,22 @@
+# managed via $INFRA_REPO_URL
+
+# similar to provided, but w/o nginx,
+# because we're running nginx locally to manage multiple domains,
+# so instead of spawning another instance of nginx,
+# we forward to container directly.
+#
+# also w/o npm install, because waste &
+# also docker rootless doesn't have permissions to modify files.
+
+version: "3"
+services:
+  node:
+    image: "node:lts-alpine"
+    user: "node"
+    working_dir: /home/node/app
+    volumes:
+      - ./server/:/home/node/app
+    command: ash -c "node index.js"
+    restart: unless-stopped
+    ports:
+      - "$PORT:3000"
