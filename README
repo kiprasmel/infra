@@ -1,0 +1,56 @@
+infra
+=====
+
+self-host everything.
+
+ever got into actually reading privacy policies of the apps you use?
+what about their terms and conditions? (and not just the TL;DRs)
+
+you'd be surprised.
+
+
+setup
+-----
+
+- fork this project to your own
+- update relevant variables in ./{local,server}/<project>/vars.sh
+- run:
+
+```
+./{local,server}/<project>/setup.sh
+```
+
+also recommended to fork the forked repositories themselves,
+so that you're in full control when updates come in. use:
+
+```
+./list-repos-to-fork.sh
+```
+
+to get the list.
+
+
+project list
+------------
+
+- wakapi -- open source alternative to wakatime (coding stats)
+
+
+not included here
+-----------------
+
+libre:
+- keepassxc - password manager
+- vscodium - F/OSS vscode fork
+
+free:
+- obsidian - if taking notes, much better (privacy & more) than some *other* note taking apps
+
+paid:
+- little snitch (macos) - interactive network filter
+
+
+see also
+--------
+
+- dotfiles -- https://github.com/kiprasmel/voidrice
