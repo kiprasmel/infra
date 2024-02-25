@@ -1,0 +1,11 @@
+# dynamically cloned repos
+*.git
+
+# generated automatically
+*.generated
+*.generated*
+start
+stop
+
+TODO.md
+

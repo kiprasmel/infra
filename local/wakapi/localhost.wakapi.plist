@@ -1,0 +1,40 @@
+<!-- managed via $INFRA_REPO_URL -->
+
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>Label</key>
+	<string>localhost.wakapi</string>
+
+	<key>EnvironmentVariables</key>
+	<dict>
+		<key>WAKAPI_DB_NAME</key>
+		<string>$REPO_ROOT/wakapi_db.db</string>
+		<key>WAKAPI_PASSWORD_SALT</key>
+		<string>$WAKAPI_PASSWORD_SALT</string>
+	</dict>
+
+	<key>ProgramArguments</key>
+	<array>
+	<string>$REPO_ROOT/wakapi</string>
+	<string>-config</string>
+	<string>$REPO_ROOT/config.yml</string>
+	</array>
+
+	<key>RunAtLoad</key>
+	<true/>
+	<key>KeepAlive</key>
+	<dict>
+		<key>SuccessfulExit</key>
+		<false/>
+		<key>Crashed</key>
+		<true/>
+	</dict>
+
+	<key>StandardOutPath</key>
+	<string>$STDOUT</string>
+	<key>StandardErrorPath</key>
+	<string>$STDERR</string>
+</dict>
+</plist>
