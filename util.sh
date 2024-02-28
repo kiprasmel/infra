@@ -43,7 +43,7 @@ clone_forked_repo() {
 
 	# we suffix $REPO with '.git'
 	# to be automatically git-ignored in the infra repo.
-	REPO_ROOT="${DIRNAME}/${REPO}.git"
+	REPO_ROOT="${REPO_ROOT:-${DIRNAME}/${REPO}.git}"
 
 	if test -d "$REPO_ROOT"; then
 		>&2 printf "warn: not cloning repo - directory already exists ($REPO_ROOT).\n"
@@ -64,5 +64,29 @@ clone_forked_repo() {
 				|| git checkout -b "$BRANCH" "$remote/$BRANCH"
 		}
 	)
+}
+
+install_nginx_site() {
+	test $# -eq 2 || BUG "install_nginx_site: need exactly 2 args (config and domain), got $#.\n"
+
+	local conf="$1"
+	shift
+	local domain="$1"
+	shift
+
+	local NGINX_BASEDIR="/etc/nginx"
+	local NGINX_DIR="$NGINX_BASEDIR/sites-available"
+	local NGINX_FILEPATH="$NGINX_DIR/$domain"
+
+	sudo mv "$DIRNAME/$conf" "$NGINX_FILEPATH"
+
+	sudo ln -s -f "$NGINX_FILEPATH" "$NGINX_BASEDIR/sites-enabled/"
+
+	test -n "$NO_CERTBOT" || \
+		sudo certbot --nginx --redirect -d "$domain"
+
+	sudo nginx -t
+
+	sudo systemctl reload nginx
 }
 
