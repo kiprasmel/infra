@@ -36,6 +36,7 @@ project list
 local:
 
 - wakapi -- open source alternative to wakatime (coding stats)
+- spicetify -- spotify patches
 
 server:
 
