@@ -1,0 +1,52 @@
+From 0c4d2ff9808c7c020af499a8a7e40cfb0cea7787 Mon Sep 17 00:00:00 2001
+From: Kipras Melnikovas <kipras@kipras.org>
+Date: Wed, 28 Feb 2024 21:21:32 +0000
+Subject: [PATCH] server patch
+---
+ .config/nvim/init.vim | 2 +-
+ .gitconfig            | 2 +-
+ .profile              | 2 +-
+ 3 files changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/.config/nvim/init.vim b/.config/nvim/init.vim
+index efb2d00..91e9d76 100644
+--- a/.config/nvim/init.vim
++++ b/.config/nvim/init.vim
+@@ -51,7 +51,7 @@ Plug 'tpope/vim-commentary'
+ "Plug 'https://github.com/rdnetto/YCM-Generator', { 'branch': 'stable'} "
+ "Plug 'https://github.com/jalvesaq/nvim-r.git'
+ "Plug 'editorconfig/editorconfig-vim'
+-Plug 'wakatime/vim-wakatime' " self-hosted, see https://github.com/muety/wakapi
++"Plug 'wakatime/vim-wakatime' " self-hosted, see https://github.com/muety/wakapi
+ 
+ Plug 'https://github.com/tpope/vim-repeat'
+ 
+diff --git a/.gitconfig b/.gitconfig
+index 0ed1c69..7d13d02 100644
+--- a/.gitconfig
++++ b/.gitconfig
+@@ -57,7 +57,7 @@
+ 	program = gpg2
+ [commit]
+ 	verbose = true
+-	gpgSign = true
++	gpgSign = false
+ [merge]
+ 	ff = no # rebase + merge commit
+ 	conflictStyle = zdiff3
+diff --git a/.profile b/.profile
+index 1dca28d..88ba170 100644
+--- a/.profile
++++ b/.profile
+@@ -26,7 +26,7 @@ export PATH="$PATH:$HOME/.mozbuild/git-cinnabar"
+ export PATH="$PATH:$HOME/forkprojects/boomer"
+ 
+ # Default programs:
+-export EDITOR="nvim"
++export EDITOR="vim"
+ export REACT_EDITOR="vscodium"
+ export SUDO_EDITOR="vi"
+ export TERMINAL="st"
+-- 
+2.43.2
+

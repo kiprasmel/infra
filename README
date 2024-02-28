@@ -40,8 +40,10 @@ local:
 
 server:
 
+- dotfiles -- my dotfile setup [1], automated for a server environment
 - snapdrop -- like airdrop, but F/OSS & cross-platform
 
+[1] https://github.com/kiprasmel/voidrice
 
 not included here
 -----------------
