@@ -50,5 +50,19 @@ clone_forked_repo() {
 	else
 		git clone --depth=1 $* "http://github.com/$GITHUB_USERNAME/$REPO" "$REPO_ROOT"
 	fi
+
+	(
+		cd "$REPO_ROOT"
+		local BRANCH="${BRANCH:-""}"
+
+		test -z "$BRANCH" || {
+			local remote="origin"
+			git fetch origin "+refs/heads/$BRANCH:refs/remotes/$remote/$BRANCH"
+
+			local curr_branch="$(git branch --show-current)"
+			test "$curr_branch" = "$BRANCH" \
+				|| git checkout -b "$BRANCH" "$remote/$BRANCH"
+		}
+	)
 }
 
