@@ -70,3 +70,46 @@ clone_forked_repo() {
 	)
 }
 
+NO_CERTBOT=
+install_nginx_site() {
+	test $# -eq 2 || BUG "install_nginx_site: need exactly 2 args (config and domain), got $#.\n"
+
+	local conf="$1"
+	shift
+	local domain="$1"
+	shift
+
+	local NGINX_BASEDIR="/etc/nginx"
+	local NGINX_DIR="$NGINX_BASEDIR/sites-available"
+	local NGINX_FILEPATH="$NGINX_DIR/$domain"
+
+	sudo mv "$conf" "$NGINX_FILEPATH"
+
+	sudo ln -s -f "$NGINX_FILEPATH" "$NGINX_BASEDIR/sites-enabled/"
+
+	test -n "$NO_CERTBOT" || \
+		sudo certbot --nginx --redirect -d "$domain" -d "www.$domain"
+
+	sudo nginx -t
+
+	sudo systemctl reload nginx
+}
+
+# install_nginx_site_with_replace DOMAIN VAR1 VAR2 VAR...
+#
+# if nginx.conf != DOMAIN, simply cp nginx.conf DOMAIN
+#
+install_nginx_site_with_replace() {
+	local domain="$1"
+	shift
+
+	test -f "$domain" \
+		|| BUG "install_nginx_site_with_replace: nginx config not found for domain '$domain'.\n"
+
+	local nginx_tmp="$domain.tmp"
+
+	cp "$domain" "$nginx_tmp"
+	replace_vars "$nginx_tmp" "$@"
+	install_nginx_site "$nginx_tmp" "$domain"
+}
+

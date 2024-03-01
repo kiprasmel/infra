@@ -13,21 +13,9 @@ clone_forked_repo
 
 CLIENT_ROOT="$REPO_ROOT/client"
 
-NGINX_BASEDIR="/etc/nginx"
-NGINX_DIR="$NGINX_BASEDIR/sites-available"
-NGINX_FILEPATH="$NGINX_DIR/$DOMAIN"
-NGINX_TMP="nginx.conf.tmp"
-cp "nginx.conf" "$NGINX_TMP"
-replace_vars "$NGINX_TMP" "INFRA_REPO_URL" "PORT" "DOMAIN" "CLIENT_ROOT"
-sudo mv "$NGINX_TMP" "$NGINX_FILEPATH"
-
-sudo ln -s -f "$NGINX_FILEPATH" "$NGINX_BASEDIR/sites-enabled/"
-sudo nginx -t
-
-sudo certbot --nginx --redirect -d "$DOMAIN" -d "www.$DOMAIN"
-sudo nginx -t
-
-sudo systemctl reload nginx
+cp "nginx.conf" "$DOMAIN"
+install_nginx_site_with_replace "$DOMAIN" "PORT" "DOMAIN" "CLIENT_ROOT"
+rm "$DOMAIN"
 
 # custom filepath so won't override existing file
 # so can pull w/o conflicts
