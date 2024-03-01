@@ -40,6 +40,7 @@ require_root() {
 	test "$(id -u)" -eq 0 || die "script must be run as root.\n"
 }
 
+REPO_ROOT_OVERRIDE=
 clone_forked_repo() {
 	test -n "$REPO" || {
 		BUG "clone_forked_repo: \$REPO not defined\n"
@@ -47,7 +48,8 @@ clone_forked_repo() {
 
 	# we suffix $REPO with '.git'
 	# to be automatically git-ignored in the infra repo.
-	REPO_ROOT="${DIRNAME}/${REPO}.git"
+	REPO_ROOT="${REPO_ROOT_OVERRIDE:-${DIRNAME}/${REPO}.git}"
+	unset REPO_ROOT_OVERRIDE
 
 	if test -d "$REPO_ROOT"; then
 		>&2 printf "warn: not cloning repo - directory already exists ($REPO_ROOT).\n"

@@ -1,0 +1,14 @@
+# managed via $INFRA_REPO_URL
+
+server {
+	listen 80;
+	server_name draw.kipras.org www.draw.kipras.org;
+
+	root /home/$USER/infra/server/kipras.org/draw.kipras.org.git;
+	index index.html index.htm index.nginx-debian.html;
+
+	location / {
+		try_files $uri $uri/ =404;
+	}
+}
+
