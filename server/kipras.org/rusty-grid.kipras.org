@@ -1,0 +1,20 @@
+server {
+	listen 80;
+	server_name rusty-grid.kipras.org www.rusty-grid.kipras.org;
+
+	root /home/$USER/infra/server/kipras.org/rusty-grid.kipras.org/rusty-grid.git;
+
+	# the react app is built for github pages, assuming mount
+	# on /rusty-grid, so here we rewrite it to just /
+	rewrite ^/rusty-grid/(.*) /$1 last;
+
+	location / {
+		try_files '' $uri $uri/ /index.html =500;
+	}
+}
+
+server {
+    listen 443;
+	server_name rusty-grid.kipras.org www.rusty-grid.kipras.org;
+}
+
