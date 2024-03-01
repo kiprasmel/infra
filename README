@@ -42,6 +42,7 @@ server:
 
 - ubuntu -- general ubuntu server setup, ready to deploy everything else here
 - dotfiles -- my dotfile setup [1], automated for a server environment
+- umami -- user-friendly & OSS analytics
 - snapdrop -- like airdrop, but F/OSS & cross-platform
 - ssh-shareport -- subdomain setup to forward to a locally running & shared port
 - kipras.org -- my own domain & subdomains deployment
