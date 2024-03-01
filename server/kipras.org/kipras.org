@@ -1,0 +1,22 @@
+# managed via $INFRA_REPO_URL
+
+server {
+    listen 80;
+	server_name kipras.org www.kipras.org;
+
+	root /home/$USER/infra/server/kipras.org/kipras.org.git;
+	index index.html index.htm index.nginx-debian.html;
+
+	location / {
+		try_files $uri $uri/ $uri.html =404;
+	}
+
+	location /refined-gitlab-chrome-yet {
+		add_header 'Access-Control-Allow-Origin' '*';
+		add_header 'Content-Type' 'text/plain';
+
+		# DO **NOT** PREFIX WITH 'HTTPS://' !!
+		return 200 '';
+	}
+}
+

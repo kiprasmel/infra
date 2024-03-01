@@ -1,0 +1,7 @@
+# managed via $INFRA_REPO_URL
+
+server {
+	server_name tt.kipras.org www.tt.kipras.org;
+	return 301 $scheme://tvarkarastis.com$request_uri;
+}
+
