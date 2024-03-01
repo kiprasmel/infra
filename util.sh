@@ -90,3 +90,20 @@ install_nginx_site() {
 	sudo systemctl reload nginx
 }
 
+# install_nginx_site_with_replace DOMAIN VAR1 VAR2 VAR...
+#
+# if nginx.conf != DOMAIN, simply cp nginx.conf DOMAIN
+#
+install_nginx_site_with_replace() {
+	local domain="$1"
+	shift
+
+	test -f "$domain" \
+		|| BUG "install_nginx_site_with_replace: nginx config not found for domain '$domain'.\n"
+
+	local nginx_tmp="$domain.tmp"
+	cp "$domain" "$nginx_tmp"
+	replace_vars "$nginx_tmp" "INFRA_REPO_URL" "$@"
+	install_nginx_site "$nginx_tmp" "$domain"
+}
+
