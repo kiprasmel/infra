@@ -1,0 +1,14 @@
+ssh-shareport
+=============
+
+```
+# run local development server on port 3000
+live-server --port 3000 .
+
+# share to remote; see https://github.com/kiprasmel/voidrice/blob/master/.local/bin/shareport
+shareport 3000
+
+curl -L ssh.your-domain.com
+# => forwards to your localhost:3000
+```
+

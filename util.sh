@@ -71,6 +71,7 @@ clone_forked_repo() {
 }
 
 NO_CERTBOT=
+CERTBOT_ARGS=
 install_nginx_site() {
 	test $# -eq 2 || BUG "install_nginx_site: need exactly 2 args (config and domain), got $#.\n"
 
@@ -88,7 +89,7 @@ install_nginx_site() {
 	sudo ln -s -f "$NGINX_FILEPATH" "$NGINX_BASEDIR/sites-enabled/"
 
 	test -n "$NO_CERTBOT" || \
-		sudo certbot --nginx --redirect -d "$domain" -d "www.$domain"
+		sudo certbot --nginx --redirect -d "$domain" -d "www.$domain" $CERTBOT_ARGS
 
 	sudo nginx -t
 
