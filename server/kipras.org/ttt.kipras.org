@@ -1,0 +1,13 @@
+# managed via $INFRA_REPO_URL
+
+# TODO FIXME: stream not working.
+stream {
+	server {
+		listen 80;
+		server_name ttt.kipras.org www.ttt.kipras.org;
+
+		location / {
+			proxy_pass localhost:9191;
+		}
+	}
+}
