@@ -42,6 +42,7 @@ server:
 
 - dotfiles -- my dotfile setup [1], automated for a server environment
 - snapdrop -- like airdrop, but F/OSS & cross-platform
+- ssh-shareport -- subdomain setup to forward to a locally running & shared port
 - turbo-schedule -- my own project, tvarkarastis.com [2]
 
 [1] https://github.com/kiprasmel/voidrice
