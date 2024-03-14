@@ -54,7 +54,7 @@ clone_forked_repo() {
 	if test -d "$REPO_ROOT"; then
 		>&2 printf "warn: not cloning repo - directory already exists ($REPO_ROOT).\n"
 	else
-		git clone --depth=1 $* "https://github.com/$GITHUB_USERNAME/$REPO" "$REPO_ROOT"
+		git clone $* "https://github.com/$GITHUB_USERNAME/$REPO" "$REPO_ROOT"
 	fi
 
 	(
@@ -70,6 +70,10 @@ clone_forked_repo() {
 				|| git checkout -b "$BRANCH" "$remote/$BRANCH"
 		}
 	)
+}
+
+clone_forked_repo_shallow() {
+	clone_forked_repo --depth=1 $*
 }
 
 NO_CERTBOT=
