@@ -16,7 +16,7 @@ SPICETIFY_APP_DIR="$SPICETIFY_DIR/CustomApps"
 
 which spicetify || (
 	REPO="spicetify-cli"
-	clone_forked_repo
+	clone_forked_repo_shallow
 
 	cd "$REPO_ROOT"
 	EXE="spicetify"
@@ -26,7 +26,7 @@ which spicetify || (
 
 which spicetify-creator || (
 	REPO="spicetify-creator"
-	clone_forked_repo
+	clone_forked_repo_shallow
 
 	(
 		cd "$REPO_ROOT"
@@ -43,7 +43,7 @@ which spicetify-creator || (
 
 (
 	REPO="spicetify-themes"
-	clone_forked_repo --filter=blob:limit=1M
+	clone_forked_repo_shallow --filter=blob:limit=1M
 
 	cd "$REPO_ROOT"
 	find . -type d -maxdepth 1 \
@@ -53,7 +53,7 @@ which spicetify-creator || (
 
 (
 	REPO="spicetify-catppuccin"
-	clone_forked_repo
+	clone_forked_repo_shallow
 
 	ln -s -f "$REPO_ROOT/catppuccin" "$SPICETIFY_THEME_DIR/"
 )
@@ -61,28 +61,28 @@ which spicetify-creator || (
 (
 	base="galaxy"
 	REPO="spicetify-$base"
-	clone_forked_repo
+	clone_forked_repo_shallow
 
 	ln -s -f "$REPO_ROOT" "$SPICETIFY_THEME_DIR/$base"
 )
 (
 	base="ziro"
 	REPO="spicetify-$base"
-	clone_forked_repo
+	clone_forked_repo_shallow
 
 	ln -s -f "$REPO_ROOT" "$SPICETIFY_THEME_DIR/$base"
 )
 (
 	base="retroblur"
 	REPO="spicetify-$base"
-	clone_forked_repo
+	clone_forked_repo_shallow
 
 	ln -s -f "$REPO_ROOT" "$SPICETIFY_THEME_DIR/$base"
 )
 
 (
 	REPO="spicetify-oneko"
-	clone_forked_repo
+	clone_forked_repo_shallow
 
 	EXT="oneko.js"
 	ln -s -f "$REPO_ROOT/$EXT" "$SPICETIFY_EXT_DIR/"
@@ -91,7 +91,7 @@ which spicetify-creator || (
 
 (
 	REPO="spicetify-theblockbuster1"
-	clone_forked_repo
+	clone_forked_repo_shallow
 
 	EXT="CoverAmbience.js"
 	ln -s -f "$REPO_ROOT/CoverAmbience/$EXT" "$SPICETIFY_EXT_DIR/"
@@ -101,7 +101,7 @@ which spicetify-creator || (
 (
 	REPO="spicetify-playlist-icons"
 	BRANCH="dist"
-	clone_forked_repo
+	clone_forked_repo_shallow
 
 	EXT="playlist-icons.js"
 	ln -s -f "$REPO_ROOT/$EXT" "$SPICETIFY_EXT_DIR/"
@@ -111,7 +111,7 @@ which spicetify-creator || (
 (
 	REPO="spicetify-power-bar"
 	BRANCH="dist"
-	clone_forked_repo
+	clone_forked_repo_shallow
 
 	EXT="power-bar.js"
  	ln -s -f "$REPO_ROOT/$EXT" "$SPICETIFY_EXT_DIR/"
@@ -120,7 +120,7 @@ which spicetify-creator || (
 
 (
 	REPO="spicetify-pithaya"
-	clone_forked_repo
+	clone_forked_repo_shallow
 
 	(
 		cd "$REPO_ROOT"
@@ -154,7 +154,7 @@ which spicetify-creator || (
 	base="ncs-visualizer"
 	REPO="spicetify-$base"
 	BRANCH="dist"
-	clone_forked_repo
+	clone_forked_repo_shallow
 
 	ln -s -f "$REPO_ROOT" "$SPICETIFY_APP_DIR/$base"
 	spicetify config custom_apps "$base"
@@ -164,7 +164,7 @@ which spicetify-creator || (
 	base="stats"
 	REPO="spicetify-apps"
 	BRANCH="dist"
-	clone_forked_repo
+	clone_forked_repo_shallow
 
 	ln -s -f "$REPO_ROOT" "$SPICETIFY_APP_DIR/$base"
 	spicetify config custom_apps stats
