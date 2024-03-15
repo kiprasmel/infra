@@ -18,10 +18,13 @@ set -euo pipefail
 docker build -t "$IMAGE_NAME" .
 
 # TODO: check if container doesn't already exist
-# TODO: mount homedir to backup bash_history etc
+mkdir -p "$DIRNAME/mnt-home"
 docker run -d -it --name "$CONTAINER_NAME" --hostname "$CONTAINER_NAME" \
-	-v "$REPO_ROOT":/git "$IMAGE_NAME" \
-	"$SHELL"
+	-v "$REPO_ROOT:/git" \
+	--mount=type=bind,source=$DIRNAME/mnt-home,target=/root \
+	"$IMAGE_NAME" "$SHELL"
+
+#--mount=type=volume,source=$REPO_ROOT,target=/git \
 
 # authorize ssh
 docker exec "$CONTAINER_NAME" sh -c "mkdir -p ~/.ssh && touch ~/.ssh/authorized_keys"
