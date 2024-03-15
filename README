@@ -37,6 +37,8 @@ local:
 
 - wakapi -- open source alternative to wakatime (coding stats)
 - spicetify -- spotify patches
+- git-core-devel -- docker container to develop core git,
+                    see https://kipras.org/blog/devel-core-git-macos
 
 server:
 
