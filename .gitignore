@@ -6,6 +6,10 @@
 *.generated*
 start
 stop
+init
+exec
+push
+destroy
 
 TODO.md
 
