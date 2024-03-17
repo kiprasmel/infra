@@ -41,6 +41,7 @@ require_root() {
 }
 
 REPO_ROOT_OVERRIDE=
+OVERRIDE_INSTEAD_OF_REBASE=0
 clone_forked_repo() {
 	test -n "$REPO" || {
 		BUG "clone_forked_repo: \$REPO not defined\n"
@@ -69,6 +70,14 @@ clone_forked_repo() {
 			test "$curr_branch" = "$BRANCH" \
 				|| git checkout -B "$BRANCH" "$remote/$BRANCH"
 		}
+
+		if test "$OVERRIDE_INSTEAD_OF_REBASE" -ne 0; then
+			# TODO: check if any local commits present
+			# TODO: check if any local uncommitted changes present
+			git reset --hard "$remote/$BRANCH"
+		else
+			git pull --rebase
+		fi
 	)
 }
 
