@@ -26,7 +26,7 @@ replace_vars "$COMPOSE_FILEPATH" "PORT"
 
 (
 	cd "$REPO_ROOT/server"
-	npm i
+	npm ci
 )
 
 cat > start <<EOF
