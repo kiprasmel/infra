@@ -67,7 +67,7 @@ clone_forked_repo() {
 
 			local curr_branch="$(git branch --show-current)"
 			test "$curr_branch" = "$BRANCH" \
-				|| git checkout -b "$BRANCH" "$remote/$BRANCH"
+				|| git checkout -B "$BRANCH" "$remote/$BRANCH"
 		}
 	)
 }
