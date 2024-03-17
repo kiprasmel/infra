@@ -101,6 +101,7 @@ which spicetify-creator || (
 (
 	REPO="spicetify-playlist-icons"
 	BRANCH="dist"
+	OVERRIDE_INSTEAD_OF_REBASE=1
 	clone_forked_repo_shallow
 
 	EXT="playlist-icons.js"
@@ -152,6 +153,7 @@ which spicetify-creator || (
 	base="ncs-visualizer"
 	REPO="spicetify-$base"
 	BRANCH="dist"
+	OVERRIDE_INSTEAD_OF_REBASE=1
 	clone_forked_repo_shallow
 
 	ln -s -f "$REPO_ROOT" "$SPICETIFY_APP_DIR/$base"
@@ -162,6 +164,7 @@ which spicetify-creator || (
 	base="stats"
 	REPO="spicetify-apps"
 	BRANCH="dist"
+	OVERRIDE_INSTEAD_OF_REBASE=1
 	clone_forked_repo_shallow
 
 	ln -s -f "$REPO_ROOT" "$SPICETIFY_APP_DIR/$base"
