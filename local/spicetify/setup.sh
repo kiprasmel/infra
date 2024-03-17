@@ -125,13 +125,12 @@ which spicetify-creator || (
 	(
 		cd "$REPO_ROOT"
 		git clean -xdf
-		npm i
+		npm ci
 		#npm run build-local --workspaces --if-present
 	)
 
 	(
 		cd "$REPO_ROOT/extensions/made-for-you-shortcut/"
-		npm i
 		npm run build-local
 
 		EXT="made-for-you-shortcut.js"
@@ -141,7 +140,6 @@ which spicetify-creator || (
 
 	(
 		cd "$REPO_ROOT/custom-apps/eternal-jukebox/"
-		npm i
 		npm run build-local
 
 		APP="eternal-jukebox"
