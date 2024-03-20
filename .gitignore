@@ -6,6 +6,8 @@
 *.generated*
 start
 stop
+build
+rebuild
 init
 exec
 ssh

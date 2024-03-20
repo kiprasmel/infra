@@ -13,11 +13,30 @@ SHELL_ARGS="/bin/zsh -l"
 REPO="git"
 clone_forked_repo
 
+cat > build <<EOF
+#!/bin/sh
+set -xeuo pipefail
+if docker ps | grep git; then
+	docker stop "$CONTAINER_NAME"
+	docker rm "$CONTAINER_NAME"
+fi
+
+docker build -t "$IMAGE_NAME" "\$@" .
+EOF
+chmod +x build
+
+cat > rebuild <<EOF
+#!/bin/sh
+set -xeuo pipefail
+./build --no-cache "\$@"
+EOF
+chmod +x rebuild
+
 cat > init <<EOF
 #!/bin/sh
 set -euo pipefail
 
-docker build -t "$IMAGE_NAME" .
+./build
 
 ./destroy
 # TODO: mount homedir to backup bash_history etc
