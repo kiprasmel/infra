@@ -18,7 +18,8 @@ RUN apt-get update \
 	gettext \
 	unzip \
 	zsh \
-	git
+	git \
+	openssh-server
 
 # from git/ci/install-docker-dependencies.sh
 RUN apt-get update \
@@ -48,5 +49,13 @@ RUN chmod +x /usr/local/bin/install-dotfiles.sh \
 
 WORKDIR /git
 
-CMD ["/bin/zsh", "-l"]
+RUN mkdir /var/run/sshd
+EXPOSE 22
+
+# run ssh server by default.
+#
+# to access regular shell, use
+# docker exec -it git /bin/zsh -l
+#
+CMD ["/usr/sbin/sshd", "-D"]
 
