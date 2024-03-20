@@ -8,6 +8,7 @@ start
 stop
 init
 exec
+ssh
 push
 destroy
 

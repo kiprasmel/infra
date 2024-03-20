@@ -19,11 +19,10 @@ set -euo pipefail
 
 docker build -t "$IMAGE_NAME" .
 
-# TODO: check if container doesn't already exist
+./destroy
 # TODO: mount homedir to backup bash_history etc
-docker run -d -it --name "$CONTAINER_NAME" --hostname "$CONTAINER_NAME" \
-	-v "$REPO_ROOT":/git "$IMAGE_NAME" \
-	$SHELL_ARGS
+docker run -d -it --name "$CONTAINER_NAME" --hostname "$CONTAINER_NAME" -p $SSH_PORT:22 \
+	-v "$REPO_ROOT":/git "$IMAGE_NAME"
 
 # authorize ssh
 docker exec "$CONTAINER_NAME" sh -c "mkdir -p ~/.ssh && touch ~/.ssh/authorized_keys"
@@ -44,7 +43,9 @@ chmod +x init
 cat > destroy <<EOF
 #!/bin/sh
 set -xeuo pipefail
-docker rm -f "$CONTAINER_NAME"
+if docker container ls | grep git; then
+	docker rm -f "$CONTAINER_NAME"
+fi
 EOF
 chmod +x destroy
 
@@ -71,6 +72,13 @@ set -xeuo pipefail
 docker exec -it "$CONTAINER_NAME" $SHELL_ARGS
 EOF
 chmod +x "exec"
+
+cat > ssh <<EOF
+#!/bin/sh
+set -xeuo pipefail
+ssh root@localhost -p $SSH_PORT
+EOF
+chmod +x ssh
 
 cat > push <<EOF
 #!/bin/sh
