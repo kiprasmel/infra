@@ -47,6 +47,16 @@ COPY ./install-dotfiles.sh /usr/local/bin/
 RUN chmod +x /usr/local/bin/install-dotfiles.sh \
           && /usr/local/bin/install-dotfiles.sh
 
+# locale
+RUN echo "en_US.UTF-8 UTF-8" >> /etc/locale.gen && \
+    echo 'LANG="en_US.UTF-8"' >> /etc/default/locale && \
+    dpkg-reconfigure --frontend=noninteractive locales && \
+    update-locale LANG=en_US.UTF-8
+
+ENV LANG   en_US.UTF-8
+ENV LC_ALL en_US.UTF-8
+
+# default workdir
 WORKDIR /git
 
 RUN mkdir /var/run/sshd
