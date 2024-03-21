@@ -9,6 +9,7 @@ stop
 build
 rebuild
 init
+init-with-local-build
 exec
 ssh
 push
