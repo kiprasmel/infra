@@ -35,8 +35,8 @@ RUN apt-get update \
 RUN apt-get update \
 	&& apt-get upgrade -y \
 	&& apt-get install -y \
-	neovim tmux gdb gdbserver ripgrep htop python3 python3-pip neofetch \
-	valgrind kcachegrind linux-tools-common linux-tools-generic universal-ctags
+	neovim gdb gdbserver ripgrep htop universal-ctags python3 python3-pip \
+	linux-tools-common linux-tools-generic
 
 # perf deps
 RUN apt-get update \
