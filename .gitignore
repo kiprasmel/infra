@@ -7,6 +7,7 @@
 start
 stop
 build
+build-*
 rebuild
 init
 init-with-local-build
