@@ -104,7 +104,7 @@ install_nginx_site() {
 	sudo ln -s -f "$NGINX_FILEPATH" "$NGINX_BASEDIR/sites-enabled/"
 
 	test -n "$NO_CERTBOT" || \
-		sudo certbot --nginx --redirect -d "$domain" -d "www.$domain" $CERTBOT_ARGS
+		sudo certbot --keep --nginx --redirect -d "$domain" -d "www.$domain" $CERTBOT_ARGS
 
 	sudo nginx -t
 
