@@ -44,9 +44,22 @@ RUN apt-get update \
 	&& apt-get install -y \
 	flex bison pkg-config libelf-dev libtraceevent-dev
 
-# perf src
+# perf src, minimal with sparse-checkout
 RUN cd /opt \
-	&& git clone --depth=1 "https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git"
+	&& git clone --depth=1 --no-checkout --filter=blob:none --sparse "https://github.com/torvalds/linux.git" \
+	&& cd linux \
+	&& git sparse-checkout init --cone \
+	&& git checkout master \
+	&& git sparse-checkout set tools include scripts arch/arm64
+
+# slow + big AF
+#git clone --depth=1 "https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git"
+
+# filtering not supported at all:
+#git clone --depth=1 --no-checkout --filter=blob:none --filter=tree:0 --sparse "https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git"
+
+# combined filtering not supported:
+#git clone --depth=1 --no-checkout --filter=blob:none --filter=tree:0 --sparse "https://github.com/torvalds/linux.git"
 
 # perf build
 RUN cd "/opt/linux/tools/perf" \
