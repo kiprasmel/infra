@@ -38,6 +38,22 @@ RUN apt-get update \
 	neovim tmux gdb gdbserver ripgrep htop python3 python3-pip neofetch \
 	valgrind kcachegrind linux-tools-common linux-tools-generic universal-ctags
 
+# perf deps
+RUN apt-get update \
+	&& apt-get upgrade -y \
+	&& apt-get install -y \
+	flex bison pkg-config libelf-dev libtraceevent-dev
+
+# perf src
+RUN cd /opt \
+	&& git clone --depth=1 "https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git"
+
+# perf build
+RUN cd "/opt/linux/tools/perf" \
+	&& make -j `nproc` \
+	&& cp perf /usr/bin/ \
+	&& rm -rf /opt/linux
+
 # cleanup
 RUN apt-get clean \
 	&& rm -rf /var/lib/apt/lists/*
