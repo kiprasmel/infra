@@ -19,7 +19,8 @@ RUN apt-get update \
 	unzip \
 	zsh \
 	git \
-	openssh-server
+	openssh-server \
+	&& apt-get clean && rm -rf /var/lib/apt/lists/*
 
 # from git/ci/install-docker-dependencies.sh
 RUN apt-get update \
@@ -29,47 +30,34 @@ RUN apt-get update \
 	libexpat-dev tcl tk gettext zlib1g-dev perl-modules liberror-perl \
 	libauthen-sasl-perl libemail-valid-perl libdbd-sqlite3-perl \
 	libio-socket-ssl-perl libnet-smtp-ssl-perl ${CC_PACKAGE:-${CC:-gcc}} \
-	apache2 cvs cvsps gnupg libcgi-pm-perl subversion
+	apache2 cvs cvsps gnupg libcgi-pm-perl subversion \
+	&& apt-get clean && rm -rf /var/lib/apt/lists/*
 
 # extra deps
 RUN apt-get update \
 	&& apt-get upgrade -y \
 	&& apt-get install -y \
 	neovim gdb gdbserver ripgrep htop universal-ctags python3 python3-pip \
-	linux-tools-common linux-tools-generic
+	linux-tools-common linux-tools-generic \
+	&& apt-get clean && rm -rf /var/lib/apt/lists/*
 
-# perf deps
+# perf deps + perf src + perf build
 RUN apt-get update \
 	&& apt-get upgrade -y \
 	&& apt-get install -y \
-	flex bison pkg-config libelf-dev libtraceevent-dev
-
-# perf src, minimal with sparse-checkout
-RUN cd /opt \
+	flex bison pkg-config libelf-dev libtraceevent-dev \
+	&& apt-get clean && rm -rf /var/lib/apt/lists/* \
+	&& cd /opt \
 	&& git clone --depth=1 --no-checkout --filter=blob:none --sparse "https://github.com/torvalds/linux.git" \
 	&& cd linux \
 	&& git sparse-checkout init --cone \
 	&& git checkout master \
-	&& git sparse-checkout set tools include scripts arch/arm64
-
-# slow + big AF
-#git clone --depth=1 "https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git"
-
-# filtering not supported at all:
-#git clone --depth=1 --no-checkout --filter=blob:none --filter=tree:0 --sparse "https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git"
-
-# combined filtering not supported:
-#git clone --depth=1 --no-checkout --filter=blob:none --filter=tree:0 --sparse "https://github.com/torvalds/linux.git"
-
-# perf build
-RUN cd "/opt/linux/tools/perf" \
+	&& git sparse-checkout set tools include scripts arch/arm64 \
+	&& cd "/opt/linux/tools/perf" \
 	&& make -j `nproc` \
 	&& cp perf /usr/bin/ \
-	&& rm -rf /opt/linux
-
-# cleanup
-RUN apt-get clean \
-	&& rm -rf /var/lib/apt/lists/*
+	&& rm -rf /opt/linux \
+	&& apt-get clean && rm -rf /var/lib/apt/lists/*
 
 # dotfiles
 COPY ./install-dotfiles.sh /usr/local/bin/
