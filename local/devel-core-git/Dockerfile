@@ -1,9 +1,41 @@
+FROM ubuntu:latest AS builder
+
+# perf deps + perf src + perf build
+RUN apt-get update \
+	&& apt-get upgrade -y \
+	&& apt-get install -y \
+	build-essential \
+	libssl-dev \
+	libcurl4-gnutls-dev \
+	libexpat1-dev \
+	gettext \
+	unzip \
+	zsh \
+	git \
+	flex bison pkg-config libelf-dev libtraceevent-dev \
+	&& apt-get clean && rm -rf /var/lib/apt/lists/* \
+	&& cd /opt \
+	&& git clone --depth=1 --no-checkout --filter=blob:none --sparse "https://github.com/torvalds/linux.git" \
+	&& cd linux \
+	&& git sparse-checkout init --cone \
+	&& git checkout master \
+	&& git sparse-checkout set tools include scripts arch/arm64 \
+	&& cd "/opt/linux/tools/perf" \
+	&& make -j `nproc` \
+	&& cp perf /usr/bin/ \
+	&& rm -rf /opt/linux \
+	&& apt-get clean && rm -rf /var/lib/apt/lists/*
+
+# --- #
+
 FROM ubuntu:latest
 
 ENV USER="root"
 USER "$USER"
 
 ENV DEBIAN_FRONTEND="noninteractive"
+
+COPY --from=builder /usr/bin/perf /usr/bin/perf
 
 # core deps
 RUN apt-get update \
@@ -39,24 +71,6 @@ RUN apt-get update \
 	&& apt-get install -y \
 	neovim gdb gdbserver ripgrep htop universal-ctags python3 python3-pip \
 	linux-tools-common linux-tools-generic \
-	&& apt-get clean && rm -rf /var/lib/apt/lists/*
-
-# perf deps + perf src + perf build
-RUN apt-get update \
-	&& apt-get upgrade -y \
-	&& apt-get install -y \
-	flex bison pkg-config libelf-dev libtraceevent-dev \
-	&& apt-get clean && rm -rf /var/lib/apt/lists/* \
-	&& cd /opt \
-	&& git clone --depth=1 --no-checkout --filter=blob:none --sparse "https://github.com/torvalds/linux.git" \
-	&& cd linux \
-	&& git sparse-checkout init --cone \
-	&& git checkout master \
-	&& git sparse-checkout set tools include scripts arch/arm64 \
-	&& cd "/opt/linux/tools/perf" \
-	&& make -j `nproc` \
-	&& cp perf /usr/bin/ \
-	&& rm -rf /opt/linux \
 	&& apt-get clean && rm -rf /var/lib/apt/lists/*
 
 # dotfiles
