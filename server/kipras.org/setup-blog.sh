@@ -28,8 +28,7 @@ cd "$REPO_ROOT"
 ./clean
 git pull
 
-docker compose -f "$REPO_ROOT/docker-compose.prod.yml" down
-docker compose -f "$REPO_ROOT/docker-compose.prod.yml" up -d --build
+docker compose -f "$REPO_ROOT/docker-compose.build.yml" up
 
 EOF
 	chmod +x build-blog
