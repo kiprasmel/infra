@@ -40,8 +40,15 @@ set -euo pipefail
 
 ./destroy
 # TODO: mount homedir to backup bash_history etc
-docker run -d -it --name "$CONTAINER_NAME" --hostname "$CONTAINER_NAME" -p $SSH_PORT:22 \
-	-v "$REPO_ROOT":/git "$IMAGE_NAME"
+docker run -d -it --name "$CONTAINER_NAME" --hostname "$CONTAINER_NAME" \
+	-p $SSH_PORT:22 \
+	-v "$REPO_ROOT:/git" \
+	-e "DISPLAY=host.docker.internal:0" \
+	-v "/tmp/.X11-unix:/tmp/.X11-unix" \
+	-v "~/.Xauthority:/root/.Xauthority" \
+	--net=host \
+	"$IMAGE_NAME"
+
 
 # authorize ssh
 docker exec "$CONTAINER_NAME" sh -c "mkdir -p ~/.ssh && touch ~/.ssh/authorized_keys"
@@ -62,7 +69,7 @@ chmod +x init
 cat > destroy <<EOF
 #!/bin/sh
 set -xeuo pipefail
-if docker container ls | grep git; then
+if docker container ls -a | grep git; then
 	docker rm -f "$CONTAINER_NAME"
 fi
 EOF
