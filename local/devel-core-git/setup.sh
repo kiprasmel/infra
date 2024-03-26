@@ -46,7 +46,6 @@ docker run -d -it --name "$CONTAINER_NAME" --hostname "$CONTAINER_NAME" \
 	-e "DISPLAY=host.docker.internal:0" \
 	-v "/tmp/.X11-unix:/tmp/.X11-unix" \
 	-v "~/.Xauthority:/root/.Xauthority" \
-	--net=host \
 	"$IMAGE_NAME"
 
 
