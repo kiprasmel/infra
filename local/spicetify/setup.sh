@@ -14,7 +14,7 @@ SPICETIFY_EXT_DIR="$SPICETIFY_DIR/Extensions"
 SPICETIFY_THEME_DIR="$SPICETIFY_DIR/Themes"
 SPICETIFY_APP_DIR="$SPICETIFY_DIR/CustomApps"
 
-which spicetify || (
+(
 	REPO="spicetify-cli"
 	clone_forked_repo_shallow
 
