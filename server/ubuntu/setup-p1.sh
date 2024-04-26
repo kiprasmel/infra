@@ -16,6 +16,11 @@ grep "Assume-Yes" "$APT_CONF" || {
 
 sudo apt update && sudo apt upgrade
 
+# install latest git
+sudo add-apt-repository -y ppa:git-core/ppa
+sudo apt update -y && sudo apt upgrade -y # handle kernel reboot?
+sudo apt install -y git
+
 # limit journal size
 sudo printf "\nSystemMaxUse=100M\n" >> "/etc/systemd/journald.conf"
 sudo systemctl restart systemd-journald
