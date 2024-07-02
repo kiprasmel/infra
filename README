@@ -37,6 +37,7 @@ local:
 
 - wakapi -- open source alternative to wakatime (coding stats)
 - spicetify -- spotify patches
+- backup2remote -- cronjobs for encrypted directory backups
 - devel-core-git -- docker container to develop core git,
                     see https://blog.kipras.org/devel-core-git-macos
 

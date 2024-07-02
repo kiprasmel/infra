@@ -13,8 +13,6 @@ clone_forked_repo
 WAKAPI_PASSWORD_SALT="${WAKAPI_PASSWORD_SALT:-}"
 NOASK="${NOASK:-}"
 
-PLIST_OUTDIR="$HOME/Library/LaunchAgents"
-
 gen_salt() {
 	WAKAPI_PASSWORD_SALT="$(cat /dev/urandom | LC_ALL=C tr -dc 'a-zA-Z0-9' | fold -w 64 | head -n 1)"
 	cache "WAKAPI_PASSWORD_SALT"
@@ -58,7 +56,7 @@ replace_vars "$CONFIG_PATH"
 
 daemon_macos() {
 	PLIST_TEMPLATE="localhost.wakapi.plist"
-	PLIST="$PLIST_OUTDIR/$PLIST_TEMPLATE"
+	PLIST="$MACOS_DAEMON_CONFIG_OUTDIR/$PLIST_TEMPLATE"
 
 	STDOUT="/tmp/wakapi.out.log"
 	STDERR="/tmp/wakapi.err.log"

@@ -17,6 +17,7 @@ exec
 ssh
 push
 destroy
+run.*
 
 TODO.md
 

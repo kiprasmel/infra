@@ -29,10 +29,10 @@ replace_vars() {
 		"PERSON_NAME" "GITHUB_USERNAME" "INFRA_REPO_URL" \
 		"USER"
 	do
-		echo "${!var}" | grep "@" >/dev/null \
-			&& BUG "variable $var contains sed special char '@' (${!var}).\n"
+		echo "${!var}" | grep "#" >/dev/null \
+			&& BUG "variable $var contains sed special char '#' (${!var}).\n"
 
-		sed -i "s@\$${var}@${!var}@g" "$FILE"
+		sed -i "s#\$${var}#${!var}#g" "$FILE"
 	done
 }
 
@@ -147,4 +147,25 @@ read_cached() {
 
 	declare -g "${VARNAME}"="$(cat "${VARNAME}.cache")"
 }
+
+take_var_or_cache_or_exit() {
+	test -n "${!1}" || {
+		if has_cached "$1"; then
+			read_cached "$1"
+		else
+			>&2 echo "$1 is not set nor cached."
+			exit 1
+		fi
+	}
+}
+take_var_or_cache_or_noop() {
+	test -n "${!1}" || {
+		if has_cached "$1"; then
+			read_cached "$1"
+		fi
+	}
+}
+
+# for placing macos daemon .plist configs
+MACOS_DAEMON_CONFIG_OUTDIR="$HOME/Library/LaunchAgents"
 
