@@ -4,6 +4,8 @@
 # generated automatically
 *.generated
 *.generated*
+*.cache
+*.cache*
 start
 stop
 build

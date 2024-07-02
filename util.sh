@@ -129,3 +129,22 @@ install_nginx_site_with_replace() {
 	install_nginx_site "$nginx_tmp" "$domain"
 }
 
+cache() {
+	test $# -eq 1 || die "cache(): expected 1 arg (VARNAME), got $#.\n"
+	VARNAME="$1"; shift
+
+	printf "%s\n" "${!VARNAME}" > "${VARNAME}.cache"
+}
+has_cached() {
+	test $# -eq 1 || die "cache(): expected 1 arg (VARNAME), got $#.\n"
+	VARNAME="$1"; shift
+
+	test -f "${VARNAME}.cache"
+}
+read_cached() {
+	test $# -eq 1 || die "cache(): expected 1 arg (VARNAME), got $#.\n"
+	VARNAME="$1"; shift
+
+	declare -g "${VARNAME}"="$(cat "${VARNAME}.cache")"
+}
+

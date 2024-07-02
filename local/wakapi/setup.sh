@@ -13,21 +13,20 @@ clone_forked_repo
 WAKAPI_PASSWORD_SALT="${WAKAPI_PASSWORD_SALT:-}"
 NOASK="${NOASK:-}"
 
-SALT_CACHE="salt-cache.generated"
 PLIST_OUTDIR="$HOME/Library/LaunchAgents"
 
 gen_salt() {
 	WAKAPI_PASSWORD_SALT="$(cat /dev/urandom | LC_ALL=C tr -dc 'a-zA-Z0-9' | fold -w 64 | head -n 1)"
-	cache_salt
-}
-cache_salt() {
-	printf "%s\n" "$WAKAPI_PASSWORD_SALT" > "$SALT_CACHE"
+	cache "WAKAPI_PASSWORD_SALT"
 }
 
-test -z "$WAKAPI_PASSWORD_SALT" && {
-	if test -f "$SALT_CACHE"; then
-		WAKAPI_PASSWORD_SALT="$(cat "$SALT_CACHE")"
+test -n "$WAKAPI_PASSWORD_SALT" || {
+	echo "NO SALT"
+	if has_cached "WAKAPI_PASSWORD_SALT"; then
+		echo "HAS CACHED"
+		read_cached "WAKAPI_PASSWORD_SALT"
 	elif test -n "$NOASK"; then
+		echo "NOT HAS CACHED"
 		gen_salt
 	else
 		while :; do
@@ -37,7 +36,7 @@ test -z "$WAKAPI_PASSWORD_SALT" && {
 				printf "\npaste salt:\n"
 				read -r WAKAPI_PASSWORD_SALT
 				printf "got '%s', proceeding" "$WAKAPI_PASSWORD_SALT"
-				cache_salt
+				cache "WAKAPI_PASSWORD_SALT"
 				break
 			}
 			test "$ANS" = "g" || test "$ANS" == "G" && {
