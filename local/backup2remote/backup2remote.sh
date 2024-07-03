@@ -7,6 +7,9 @@ DIRNAME="$(dirname "$(readlink -f "${BASH_SOURCE[0]}")")"
 cd "$DIRNAME"
 . "../../util.sh"
 
+TMPDIR="/tmp/backup2remote"
+mkdir -p "$TMPDIR"
+
 TIMESTAMP=$(date -Iseconds)
 
 take_var_or_cache_or_exit "BACKUP_DIR"
@@ -14,7 +17,9 @@ take_var_or_cache_or_exit "REMOTE_DIR"
 take_var_or_cache_or_exit "REMOTE_ARG"
 take_var_or_cache_or_exit "GPG_ARG"
 
-BACKUP_FILE="${BACKUP_DIR}.${TIMESTAMP}.tar.gz"
+take_var_or_cache_or_default "ID" "$(basename "$BACKUP_DIR")"
+
+BACKUP_FILE="${TMPDIR}/$ID.${TIMESTAMP}.tar.gz"
 ENCRYPTED_FILE="${BACKUP_FILE}.gpg"
 
 # create tarball

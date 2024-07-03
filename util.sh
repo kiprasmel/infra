@@ -158,12 +158,18 @@ take_var_or_cache_or_exit() {
 		fi
 	}
 }
-take_var_or_cache_or_noop() {
+take_var_or_cache_or_default() {
+	set +u
 	test -n "${!1}" || {
 		if has_cached "$1"; then
 			read_cached "$1"
+		else
+			test $# -eq 2 || \
+				BUG "take_var_or_cache_or_default: expected 2 args (var name and default value), got $#."
+			declare -g "$1"="$2"
 		fi
 	}
+	set -u
 }
 
 # for placing macos daemon .plist configs

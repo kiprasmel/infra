@@ -47,7 +47,7 @@ create_backup_script() {
 	cat > "$GEN_SCRIPT" <<EOF
 #!/bin/sh
 
-BACKUP_DIR="$BACKUP_DIR" REMOTE_DIR="$REMOTE_DIR" REMOTE_ARG="$REMOTE_ARG" GPG_ARG="$GPG_ARG" "$DIRNAME/backup2remote.sh"
+ID="$ID" BACKUP_DIR="$BACKUP_DIR" REMOTE_DIR="$REMOTE_DIR" REMOTE_ARG="$REMOTE_ARG" GPG_ARG="$GPG_ARG" "$DIRNAME/backup2remote.sh"
 
 EOF
 	chmod +x "$GEN_SCRIPT"
