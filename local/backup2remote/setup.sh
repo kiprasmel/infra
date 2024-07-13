@@ -30,7 +30,7 @@ main() {
 	esac
 }
 
-BACKUP_RUNNER="$DIRNAME/backup-runner.sh"
+BACKUP_RUNNER="$DIRNAME/runall.sh"
 
 # creates a generated script,
 # that will be called by BACKUP_RUNNER,
