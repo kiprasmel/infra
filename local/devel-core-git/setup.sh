@@ -43,6 +43,7 @@ set -euo pipefail
 docker run -d -it --name "$CONTAINER_NAME" --hostname "$CONTAINER_NAME" \
 	-p $SSH_PORT:22 \
 	-v "$REPO_ROOT:/git" \
+	-v "$HOME/projects/turbo-schedule:/tt" \
 	-e "DISPLAY=host.docker.internal:0" \
 	-v "/tmp/.X11-unix:/tmp/.X11-unix" \
 	-v "$HOME/.Xauthority:/root/.Xauthority" \
