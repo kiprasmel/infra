@@ -121,6 +121,12 @@ which spicetify-creator || (
 
 (
 	REPO="spicetify-pithaya"
+
+	# fix - constantly getting untracked changes
+	pushd "$REPO.git"
+	git reset --hard
+	popd
+
 	clone_forked_repo_shallow
 
 	(
