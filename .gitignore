@@ -18,6 +18,7 @@ ssh
 push
 destroy
 run.*
+*.mnt
 
 TODO.md
-
+.vscode

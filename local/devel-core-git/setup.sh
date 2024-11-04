@@ -39,13 +39,21 @@ set -euo pipefail
 ./build
 
 ./destroy
-# TODO: mount homedir to backup bash_history etc
+
+# allow specifying additional volumes to mount:
+DOCKER_DEV_VOLUMES_FILE="\$HOME/.config/docker-dev-volumes"
+DOCKER_DEV_VOLUMES=""
+! test -f "\$DOCKER_DEV_VOLUMES_FILE" || {
+	DOCKER_DEV_VOLUMES="\$(eval "echo \"\$(cat "\$DOCKER_DEV_VOLUMES_FILE")\"")"
+}
+
 docker run -d -it --name "$CONTAINER_NAME" --hostname "$CONTAINER_NAME" \
 	-p $SSH_PORT:22 \
 	-v "$REPO_ROOT:/git" \
 	-e "DISPLAY=host.docker.internal:0" \
 	-v "/tmp/.X11-unix:/tmp/.X11-unix" \
 	-v "$HOME/.Xauthority:/root/.Xauthority" \
+	\$DOCKER_DEV_VOLUMES \
 	"$IMAGE_NAME"
 
 
@@ -113,4 +121,3 @@ EOF
 chmod +x push
 
 ./init
-
