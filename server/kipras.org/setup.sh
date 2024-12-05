@@ -28,6 +28,25 @@ cd "$DIRNAME"
 
 	install_nginx_site_with_replace "rusty-grid.kipras.org"
 )
+(
+	REPO="surfe-note-app"
+	REPO_ROOT_OVERRIDE="$DIRNAME/note.kipras.org.git"
+	clone_forked_repo
+
+	cat > build-note <<EOF
+#!/bin/bash
+set -xeuo pipefail
+cd "$REPO_ROOT"
+git pull
+yarn
+yarn build
+EOF
+	chmod +x build-note
+
+	./build-note
+
+	install_nginx_site_with_replace "note.kipras.org"
+)
 
 install_nginx_site_with_replace "ts.kipras.org"
 install_nginx_site_with_replace "tt.kipras.org"
