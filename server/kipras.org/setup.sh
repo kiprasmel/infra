@@ -24,6 +24,7 @@ cd "$DIRNAME"
 (
 	REPO="rusty-grid"
 	BRANCH="gh-pages"
+	OVERRIDE_INSTEAD_OF_REBASE=1
 	clone_forked_repo
 
 	install_nginx_site_with_replace "rusty-grid.kipras.org"
