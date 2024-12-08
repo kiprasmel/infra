@@ -29,6 +29,7 @@ cd "$DIRNAME"
 
 	install_nginx_site_with_replace "rusty-grid.kipras.org"
 )
+
 (
 	REPO="surfe-note-app"
 	REPO_ROOT_OVERRIDE="$DIRNAME/note.kipras.org.git"

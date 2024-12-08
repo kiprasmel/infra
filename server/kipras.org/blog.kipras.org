@@ -4,7 +4,7 @@ server {
 	listen 80;
 	server_name blog.kipras.org www.blog.kipras.org;
 
-	root /home/$USER/infra/server/kipras.org/kipras.org.git/blog/_site;
+	root /home/$USER/infra/server/kipras.org/blog.git/_site;
 	index index.html index.htm index.nginx-debian.html;
 
 	location / {

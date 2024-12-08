@@ -11,14 +11,10 @@ cd "$DIRNAME"
 NO_INTERACTIVE="${NO_INTERACTIVE:-0}"
 
 (
-	REPO_ROOT="$DIRNAME/kipras.org.git/blog"
-	test -d "$REPO_ROOT" || git clone "git@github.com:kiprasmel/blog.git" "$REPO_ROOT"
-
-	if test "$NO_INTERACTIVE" -ne 0; then
-		echo "NO_INTERACTIVE: NOT UPDATING NGINX CONF"
-	else
-		install_nginx_site_with_replace "blog.kipras.org"
-	fi
+	REPO="blog"
+	PRIVATE=1
+	clone_forked_repo
+	install_nginx_site_with_replace "blog.kipras.org"
 
 	cat > build-blog <<EOF
 #!/bin/bash
@@ -35,4 +31,3 @@ EOF
 
 	./build-blog
 )
-
