@@ -42,6 +42,7 @@ require_root() {
 
 REPO_ROOT_OVERRIDE=
 OVERRIDE_INSTEAD_OF_REBASE=0
+PRIVATE=0
 clone_forked_repo() {
 	test -n "$REPO" || {
 		BUG "clone_forked_repo: \$REPO not defined\n"
@@ -55,7 +56,11 @@ clone_forked_repo() {
 	if test -d "$REPO_ROOT"; then
 		>&2 printf "warn: not cloning repo - directory already exists ($REPO_ROOT).\n"
 	else
-		git clone $* "https://github.com/$GITHUB_USERNAME/$REPO" "$REPO_ROOT"
+		if test "$PRIVATE" -eq 0; then
+			git clone $* "https://github.com/$GITHUB_USERNAME/$REPO" "$REPO_ROOT"
+		else
+			git clone $* "git@github.com:$GITHUB_USERNAME/$REPO" "$REPO_ROOT"
+		fi
 	fi
 
 	(
@@ -174,4 +179,3 @@ take_var_or_cache_or_default() {
 
 # for placing macos daemon .plist configs
 MACOS_DAEMON_CONFIG_OUTDIR="$HOME/Library/LaunchAgents"
-
