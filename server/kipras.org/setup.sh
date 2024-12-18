@@ -50,6 +50,25 @@ EOF
 	install_nginx_site_with_replace "note.kipras.org"
 )
 
+(
+	REPO="zenml-stacks"
+	clone_forked_repo
+
+	cat > build-zenml-stacks <<EOF
+#!/bin/bash
+set -xeuo pipefail
+cd "$REPO_ROOT"
+git pull
+yarn
+yarn build
+EOF
+	chmod +x build-zenml-stacks
+
+	./build-zenml-stacks
+
+	install_nginx_site_with_replace "zenml-stacks.kipras.org"
+)
+
 install_nginx_site_with_replace "ts.kipras.org"
 install_nginx_site_with_replace "tt.kipras.org"
 

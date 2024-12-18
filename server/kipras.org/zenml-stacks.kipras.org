@@ -1,0 +1,19 @@
+# managed via $INFRA_REPO_URL
+
+server {
+	listen 80;
+	server_name zenml-stacks.kipras.org www.zenml-stacks.kipras.org;
+
+	root /home/$USER/infra/server/kipras.org/zenml-stacks.git/build;
+	index index.html index.htm index.nginx-debian.html;
+
+	location / {
+		try_files $uri $uri/ $uri.html =404;
+	}
+
+	gzip            on;
+	gzip_min_length 1000;
+	gzip_proxied    any;
+	gzip_types      "*";
+}
+
