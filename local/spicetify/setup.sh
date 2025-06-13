@@ -179,7 +179,7 @@ which spicetify-creator || (
 
 #spicetify config current_theme catppuccin
 #spicetify config current_theme retroblur
-spicetify config current_theme galaxy # + background from retroblur = 🔥
+#spicetify config current_theme galaxy # + background from retroblur = 🔥
 
 spicetify apply enable-devtools
 
