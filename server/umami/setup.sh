@@ -26,6 +26,7 @@ set -xeuo pipefail
 (
 	cd "$REPO_ROOT"
 	git pull
+	docker compose pull
 )
 EOF
 chmod +x init
