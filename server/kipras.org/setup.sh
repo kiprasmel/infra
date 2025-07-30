@@ -49,6 +49,25 @@ EOF
 
 	install_nginx_site_with_replace "note.kipras.org"
 )
+(
+	REPO="porto-challenge"
+	REPO_ROOT_OVERRIDE="$DIRNAME/vibe.kipras.org.git"
+	clone_forked_repo
+
+	cat > build-vibe <<EOF
+#!/bin/bash
+set -xeuo pipefail
+cd "$REPO_ROOT"
+git pull
+yarn
+yarn build
+EOF
+	chmod +x build-vibe
+
+	PATH="$(n which 20):$PATH" ./build-vibe
+
+	install_nginx_site_with_replace "vibe.kipras.org"
+)
 
 (
 	REPO="zenml-stacks"

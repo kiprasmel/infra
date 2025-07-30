@@ -1,0 +1,19 @@
+# managed via $INFRA_REPO_URL
+
+server {
+	listen 80;
+	server_name vibe.kipras.org www.vibe.kipras.org;
+
+	root /home/$USER/infra/server/kipras.org/vibe.kipras.org.git/dist;
+	index index.html index.htm index.nginx-debian.html;
+
+	location / {
+		try_files $uri $uri/ $uri.html =404;
+	}
+
+	gzip            on;
+	gzip_min_length 1000;
+	gzip_proxied    any;
+	gzip_types      "*";
+}
+
