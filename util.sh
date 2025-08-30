@@ -43,9 +43,13 @@ require_root() {
 REPO_ROOT_OVERRIDE=
 OVERRIDE_INSTEAD_OF_REBASE=0
 PRIVATE=0
-clone_forked_repo() {
+clone_repo() {
+	test -n "$REPO_AUTHOR" || {
+		BUG "clone_repo: \$AUTHOR not defined\n"
+	}
+
 	test -n "$REPO" || {
-		BUG "clone_forked_repo: \$REPO not defined\n"
+		BUG "clone_repo: \$REPO not defined\n"
 	}
 
 	# we suffix $REPO with '.git'
@@ -57,9 +61,9 @@ clone_forked_repo() {
 		>&2 printf "warn: not cloning repo - directory already exists ($REPO_ROOT).\n"
 	else
 		if test "$PRIVATE" -eq 0; then
-			git clone $* "https://github.com/$GITHUB_USERNAME/$REPO" "$REPO_ROOT"
+			git clone $* "https://github.com/$REPO_AUTHOR/$REPO" "$REPO_ROOT"
 		else
-			git clone $* "git@github.com:$GITHUB_USERNAME/$REPO" "$REPO_ROOT"
+			git clone $* "git@github.com:$REPO_AUTHOR/$REPO" "$REPO_ROOT"
 		fi
 	fi
 
@@ -85,6 +89,15 @@ clone_forked_repo() {
 		fi
 	)
 }
+clone_forked_repo() {
+	test -n "$REPO" || {
+		BUG "clone_forked_repo: \$REPO not defined\n"
+	}
+
+	local REPO_AUTHOR="$GITHUB_USERNAME" 
+
+	clone_repo "$@"
+}
 
 clone_forked_repo_shallow() {
 	clone_forked_repo --depth=1 $*
@@ -103,6 +116,7 @@ install_nginx_site() {
 	local NGINX_BASEDIR="/etc/nginx"
 	local NGINX_DIR="$NGINX_BASEDIR/sites-available"
 	local NGINX_FILEPATH="$NGINX_DIR/$domain"
+	# NGINX_FILEPATH = "/etc/nginx/sites-available/$domain"
 
 	sudo mv "$conf" "$NGINX_FILEPATH"
 
