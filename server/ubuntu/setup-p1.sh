@@ -11,7 +11,7 @@ cd "$DIRNAME"
 APT_CONF="/etc/apt/apt.conf"
 touch "$APT_CONF"
 grep "Assume-Yes" "$APT_CONF" || {
-	printf "%s" 'APT::Get::Assume-Yes "true"' >> "$APT_CONF"
+	printf "%s" 'APT::Get::Assume-Yes "true";' >> "$APT_CONF"
 }
 
 sudo apt update && sudo apt upgrade
