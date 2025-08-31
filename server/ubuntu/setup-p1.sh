@@ -56,6 +56,6 @@ sudo usermod -aG "$USER" www-data
 # verify
 sudo -u www-data stat "$DIRNAME" >/dev/null
 
-"$DIRNAME/install-docker-rootless-p1.sh"
+sudo "$DIRNAME/install-docker-rootless-p1.sh"
 echo "re-login please, then run ./setup-p2.sh yourself."
 exit
