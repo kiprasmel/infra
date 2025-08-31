@@ -1,5 +1,8 @@
 #!/usr/bin/env bash
 
+DIRNAME="$(dirname "$(readlink -f "${BASH_SOURCE[0]}")")"
+. $DIRNAME/../../util.sh
+
 sudo systemctl disable --now docker.service docker.socket
 sudo apt install -y uidmap docker-ce-rootless-extras
 
