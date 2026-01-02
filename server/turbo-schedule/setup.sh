@@ -9,7 +9,6 @@ cd "$DIRNAME"
 . "./vars.sh"
 
 REPO="turbo-schedule"
-BRANCH="whole-week-schedule" # TODO FIXME
 clone_forked_repo
 
 (
@@ -20,4 +19,3 @@ clone_forked_repo
 install_nginx_site_with_replace "tvarkarastis.com" "PORT" "CONFIG_URL"
 
 >&2 printf "\ndeployed turbo-schedule. though, for full deployment, re-deploy yourself thru turbo-schedule/deploy.sh\n\n"
-
