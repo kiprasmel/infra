@@ -179,3 +179,101 @@ take_var_or_cache_or_default() {
 
 # for placing macos daemon .plist configs
 MACOS_DAEMON_CONFIG_OUTDIR="$HOME/Library/LaunchAgents"
+
+# env file utilities for managing secrets outside of infra repo
+#
+# usage in setup.sh:
+#   sync_env_file "$REPO_ROOT/.env.example"
+#   # creates/updates .env, reports missing vars
+#
+# usage in deploy script:
+#   check_env_file "$REPO_ROOT/.env.example" || exit 1
+#   cp .env "$REPO_ROOT/.env"
+#
+
+# get required var names from .env.example (lines matching VAR=)
+_env_get_required_vars() {
+	local example="$1"
+	grep -E '^[A-Z_]+=.*$' "$example" | cut -d= -f1
+}
+
+# get missing or empty vars from .env compared to .env.example
+# returns space-separated list of missing var names
+_env_get_missing_vars() {
+	local example="$1"
+	local env_file="${2:-.env}"
+	local missing=""
+
+	for var in $(_env_get_required_vars "$example"); do
+		local val
+		val=$(grep -E "^${var}=" "$env_file" 2>/dev/null | cut -d= -f2- | tr -d '"' | tr -d "'" || true)
+		if [ -z "$val" ]; then
+			missing="$missing $var"
+		fi
+	done
+
+	echo "$missing"
+}
+
+# sync .env file with .env.example
+# - creates .env from example if missing
+# - reports missing/empty vars
+# returns 0 if env is ready, 1 if user needs to fill vars
+sync_env_file() {
+	local example="$1"
+	local env_file="${2:-.env}"
+
+	if [ ! -f "$env_file" ]; then
+		cp "$example" "$env_file"
+		>&2 printf "created %s from template. fill in the values.\n" "$env_file"
+		return 1
+	fi
+
+	local missing
+	missing=$(_env_get_missing_vars "$example" "$env_file")
+
+	if [ -n "$missing" ]; then
+		>&2 printf "missing or empty vars in %s:%s\n" "$env_file" "$missing"
+		return 1
+	fi
+
+	return 0
+}
+
+# check if .env file is ready (all vars filled)
+# returns 0 if ready, 1 if not
+check_env_file() {
+	local example="$1"
+	local env_file="${2:-.env}"
+
+	if [ ! -f "$env_file" ]; then
+		>&2 printf "error: %s not found. run setup.sh first.\n" "$env_file"
+		return 1
+	fi
+
+	local missing
+	missing=$(_env_get_missing_vars "$example" "$env_file")
+
+	if [ -n "$missing" ]; then
+		>&2 printf "error: missing or empty vars in %s:%s\n" "$env_file" "$missing"
+		return 1
+	fi
+
+	return 0
+}
+
+# set a var in .env file
+# usage: set_env_var VAR_NAME "value"
+set_env_var() {
+	local var="$1"
+	local val="$2"
+	local env_file="${3:-.env}"
+
+	if grep -qE "^${var}=" "$env_file" 2>/dev/null; then
+		# var exists - replace it
+		sed -i "s#^${var}=.*#${var}=${val}#" "$env_file"
+	else
+		# var doesn't exist - append it
+		echo "${var}=${val}" >> "$env_file"
+	fi
+}

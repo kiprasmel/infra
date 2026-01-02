@@ -22,3 +22,5 @@ run.*
 
 TODO.md
 .vscode
+
+.env
