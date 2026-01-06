@@ -73,9 +73,10 @@ cat > logs <<EOF
 #!/bin/bash
 set -xeuo pipefail
 
+LEVEL="\${1:-info}"
+
 (
-	cd "$REPO_ROOT"
-	docker compose -f "$COMPOSE_FILEPATH" logs -f
+	docker logs pr-versions -f | npx pino-pretty -L "\$LEVEL" -S
 )
 EOF
 chmod +x logs
