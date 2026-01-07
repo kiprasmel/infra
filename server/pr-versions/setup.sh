@@ -13,7 +13,7 @@ PRIVATE=1
 clone_forked_repo
 
 COMPOSE_FILEPATH="$REPO_ROOT/docker-compose.yml"
-cp "docker-compose.yml" "$COMPOSE_FILEPATH"
+cp "$DIRNAME/docker-compose.yml" "$COMPOSE_FILEPATH"
 replace_vars "$COMPOSE_FILEPATH" "PORT" "DOMAIN" "IMAGE_HOST"
 
 install_nginx_site_with_replace "pr-versions.kipras.org" "DOMAIN" "PORT"
@@ -63,7 +63,7 @@ cd "$DIRNAME"
 . "../../util.sh"
 
 check_env_file "$ENV_EXAMPLE" || exit 1
-cp .env "$REPO_ROOT/.env"
+ln -sf "$DIRNAME/.env" "$REPO_ROOT/.env"
 ./init
 ./start
 EOF
@@ -81,10 +81,27 @@ LEVEL="\${1:-info}"
 EOF
 chmod +x logs
 
+cat > "exec" <<EOF
+#!/bin/bash
+
+docker exec -it pr-versions bash \$*
+EOF
+chmod +x exec
+
+cat > cli <<EOF
+#!/bin/bash
+set -xeuo pipefail
+
+docker exec -it pr-versions bash -c "node lib/cli/index.js \$*"
+EOF
+chmod +x cli
+
 # sync env file (creates .env from example if missing)
 sync_env_file "$ENV_EXAMPLE"
 
 # fill in public vars from vars.sh
+set_env_var "PORT" "$PORT"
+set_env_var "DOMAIN" "$DOMAIN"
 set_env_var "IMAGE_HOST" "$IMAGE_HOST"
 
 >&2 printf "\n"
