@@ -16,8 +16,8 @@ cmd_exec() {
         exit 1
     }
     
-    # run script on remote via ssh
-    ssh -t -o LogLevel=ERROR "$remote" "cd $REMOTE_INFRA_DIR/$project_dir && ./$script $*"
+    # run script on remote via ssh (login shell for PATH setup)
+    ssh -t -o LogLevel=ERROR "$remote" "bash -l -c 'cd $REMOTE_INFRA_DIR/$project_dir && ./$script $*'"
 }
 
 case "${1:-}" in
