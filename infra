@@ -1,0 +1,26 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+INFRA_DIR="$(dirname "$(readlink -f "${BASH_SOURCE[0]}")")"
+REMOTE_INFRA_DIR="\$HOME/infra"
+
+cmd_exec() {
+    local remote="$1"; shift
+    local project="$1"; shift
+    local script="$1"; shift
+    
+    # find project in server/ directory
+    local project_dir="server/$project"
+    test -d "$INFRA_DIR/$project_dir" || {
+        >&2 echo "error: project '$project' not found in server/"
+        exit 1
+    }
+    
+    # run script on remote via ssh
+    ssh -t -o LogLevel=ERROR "$remote" "cd $REMOTE_INFRA_DIR/$project_dir && ./$script $*"
+}
+
+case "${1:-}" in
+    exec) shift; cmd_exec "$@" ;;
+    *)    echo "usage: infra exec <remote> <project> <script> [args...]"; exit 1 ;;
+esac
