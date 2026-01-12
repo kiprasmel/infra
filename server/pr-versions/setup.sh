@@ -76,7 +76,7 @@ set -xeuo pipefail
 LEVEL="\${1:-info}"
 
 (
-	docker logs pr-versions -f | npx pino-pretty -L "\$LEVEL" -S
+	docker logs pr-versions -f | npx pino-pretty -L "\$LEVEL" -S || sleep 5 && ./logs
 )
 EOF
 chmod +x logs
