@@ -1,3 +1,5 @@
+# needs to be in sync with pr-versions project
+
 services:
   pr-versions:
     container_name: pr-versions
@@ -7,6 +9,9 @@ services:
       - "$PORT:10000"
     env_file:
       - .env
+    volumes:
+      - ./volume/.image-cache:/usr/src/app/.image-cache
+      - ./volume/.local:/usr/src/app/.local
     restart: unless-stopped
     healthcheck:
       test: ["CMD-SHELL", "curl -f http://localhost:$PORT/ || exit 1"]
