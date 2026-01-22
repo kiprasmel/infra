@@ -1,0 +1,43 @@
+---
+services:
+  llm:
+    image: ghcr.io/ggml-org/llama.cpp:server-cuda
+    container_name: llm-server
+    restart: unless-stopped
+    ports:
+      - "$PORT:8080"
+    volumes:
+      - ./models:/models:ro
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
+    command:
+      - --model
+      - /models/$MODEL_FILE
+      - --host
+      - "0.0.0.0"
+      - --port
+      - "8080"
+      - -ngl
+      - "$GPU_LAYERS"
+      - --ctx-size
+      - "$CONTEXT_SIZE"
+      - --parallel
+      - "$PARALLEL_SLOTS"
+      - --cont-batching
+      - --flash-attn
+      - "$FLASH_ATTN"
+      - --temp
+      - "0.7"
+      - --top-p
+      - "1.0"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
