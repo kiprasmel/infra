@@ -8,6 +8,13 @@ server {
 	client_header_buffer_size     1024K;
 	large_client_header_buffers 4 1024K;
 
+	location /github-app {
+		return 301 "https://github.com/apps/pr-versions";
+	}
+	location /app {
+		return 301 "https://github.com/apps/pr-versions";
+	}
+
 	location / {
 		proxy_http_version 1.1;
 		proxy_set_header Upgrade $http_upgrade;
