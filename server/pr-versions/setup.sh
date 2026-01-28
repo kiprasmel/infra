@@ -9,6 +9,7 @@ cd "$DIRNAME"
 . "./vars.sh"
 
 REPO="pr-versions"
+GITHUB_USERNAME="pr-versions"
 PRIVATE=1
 clone_forked_repo
 
