@@ -8,6 +8,8 @@ cd "$DIRNAME"
 . "../../util.sh"
 . "./vars.sh"
 
+OPTIONAL_ENV_VARS="WEBHOOK_PROXY_URL"
+
 REPO="pr-versions"
 GITHUB_USERNAME="pr-versions"
 PRIVATE=1
@@ -63,7 +65,7 @@ set -xeuo pipefail
 cd "$DIRNAME"
 . "../../util.sh"
 
-check_env_file "$ENV_EXAMPLE" || exit 1
+OPTIONAL_ENV_VARS="WEBHOOK_PROXY_URL" check_env_file "$ENV_EXAMPLE" || exit 1
 ln -sf "$DIRNAME/.env" "$REPO_ROOT/.env"
 ./init
 ./start

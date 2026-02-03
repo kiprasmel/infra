@@ -199,12 +199,18 @@ _env_get_required_vars() {
 
 # get missing or empty vars from .env compared to .env.example
 # returns space-separated list of missing var names
+# set OPTIONAL_ENV_VARS="VAR1,VAR2" to skip specific vars
 _env_get_missing_vars() {
 	local example="$1"
 	local env_file="${2:-.env}"
 	local missing=""
 
 	for var in $(_env_get_required_vars "$example"); do
+		# skip optional vars
+		if echo ",${OPTIONAL_ENV_VARS:-}," | grep -q ",$var,"; then
+			continue
+		fi
+
 		local val
 		val=$(grep -E "^${var}=" "$env_file" 2>/dev/null | cut -d= -f2- | tr -d '"' | tr -d "'" || true)
 		if [ -z "$val" ]; then
