@@ -194,8 +194,89 @@ cmd_exec() {
 
 ### end commands ###
 
+### begin config command ###
+
+cmd_config() {
+    case "${1:-}" in
+        show)
+            config_init
+            jq . "$INFRA_CONFIG_FILE"
+            ;;
+        set)
+            shift
+            case "${1:-}" in
+                default-remote)
+                    test -n "${2:-}" || { >&2 echo "usage: infra config set default-remote <remote>"; exit 1; }
+                    config_set ".default_remote" "$2"
+                    echo "default remote set to '$2'"
+                    ;;
+                remote)
+                    test -n "${2:-}" && test -n "${3:-}" || { >&2 echo "usage: infra config set remote <project> <remote>"; exit 1; }
+                    config_set ".projects.\"$2\".remote" "$3"
+                    echo "remote for '$2' set to '$3'"
+                    ;;
+                alias)
+                    test -n "${2:-}" && test -n "${3:-}" || { >&2 echo "usage: infra config set alias <dir-name> <project>"; exit 1; }
+                    config_set ".aliases.\"$2\"" "$3"
+                    echo "alias '$2' -> '$3'"
+                    ;;
+                *)
+                    >&2 echo "usage: infra config set <default-remote|remote|alias> ..."
+                    exit 1
+                    ;;
+            esac
+            ;;
+        get)
+            shift
+            case "${1:-}" in
+                default-remote)
+                    config_get ".default_remote"
+                    ;;
+                remote)
+                    test -n "${2:-}" || { >&2 echo "usage: infra config get remote <project>"; exit 1; }
+                    config_get ".projects.\"$2\".remote"
+                    ;;
+                alias)
+                    test -n "${2:-}" || { >&2 echo "usage: infra config get alias <dir-name>"; exit 1; }
+                    config_get ".aliases.\"$2\""
+                    ;;
+                *)
+                    >&2 echo "usage: infra config get <default-remote|remote|alias> ..."
+                    exit 1
+                    ;;
+            esac
+            ;;
+        *)
+            >&2 echo "usage: infra config <show|set|get>"
+            exit 1
+            ;;
+    esac
+}
+
+### end config command ###
+
+### begin dispatch ###
+
 case "${1:-}" in
-    cd)   shift; cmd_cd "$@" ;;
-    exec) shift; cmd_exec "$@" ;;
-    *)    echo "usage: infra <cd|exec> <remote> <project> [script] [args...]"; exit 1 ;;
+    cd)     shift; cmd_cd "$@" ;;
+    exec)   shift; cmd_exec "$@" ;;
+    config) shift; cmd_config "$@" ;;
+    *)
+        cat <<'EOF'
+usage: infra <cd|exec|config> [options]
+
+  infra cd [remote] [project]           ssh into project dir on remote
+  infra exec [script] [args...]         run script in project dir on remote
+  infra config show                     show current config
+  infra config set default-remote <r>   set global default remote
+  infra config set remote <proj> <r>    set per-project remote
+  infra config set alias <dir> <proj>   alias a directory name to an infra project
+  infra config get default-remote       get global default remote
+  infra config get remote <proj>        get per-project remote
+  infra config get alias <dir>          get alias for a directory name
+EOF
+        exit 1
+        ;;
 esac
+
+### end dispatch ###
