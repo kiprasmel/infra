@@ -42,6 +42,48 @@ config_set() {
 
 ### end config ###
 
+### begin project detection ###
+
+# detect_project
+# infers project name from CWD, handling git worktrees.
+# for worktrees, --git-common-dir points to the main repo's .git,
+# so we dirname that to get the real repo root.
+detect_project() {
+    local dir
+    dir="$(pwd)"
+
+    if command -v git >/dev/null 2>&1 && git rev-parse --is-inside-work-tree >/dev/null 2>&1; then
+        local git_common_dir
+        git_common_dir="$(git rev-parse --git-common-dir 2>/dev/null)"
+        if test -n "$git_common_dir"; then
+            dir="$(dirname "$(readlink -f "$git_common_dir")")"
+        fi
+    fi
+
+    basename "$dir"
+}
+
+# resolve_alias <name>
+# checks aliases map in config; returns mapped project name or input unchanged
+resolve_alias() {
+    local name="$1"
+    local mapped
+    mapped="$(config_get ".aliases.\"$name\"")"
+    if test -n "$mapped"; then
+        echo "$mapped"
+    else
+        echo "$name"
+    fi
+}
+
+# is_valid_project <name>
+# returns 0 if server/<name> exists in the infra repo
+is_valid_project() {
+    test -d "$INFRA_DIR/server/$1"
+}
+
+# resolve_project_dir <project>
+# validates project exists and returns its server/ path
 resolve_project_dir() {
     local project="$1"
     local project_dir="server/$project"
@@ -51,6 +93,8 @@ resolve_project_dir() {
     }
     echo "$project_dir"
 }
+
+### end project detection ###
 
 # ssh into remote and cd to project directory
 cmd_cd() {
