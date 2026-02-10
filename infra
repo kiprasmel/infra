@@ -96,6 +96,37 @@ resolve_project_dir() {
 
 ### end project detection ###
 
+### begin remote resolution ###
+
+# resolve_remote <project>
+# walks: per-project config -> global default -> error
+resolve_remote() {
+    local project="$1"
+    local remote
+
+    # 1. per-project remote
+    remote="$(config_get ".projects.\"$project\".remote")"
+    test -n "$remote" && { echo "$remote"; return; }
+
+    # 2. global default
+    remote="$(config_get ".default_remote")"
+    test -n "$remote" && { echo "$remote"; return; }
+
+    # 3. not found
+    >&2 echo "error: no remote for project '$project' and no default_remote set."
+    >&2 echo "  infra config set default-remote <remote>"
+    >&2 echo "  infra config set remote $project <remote>"
+    return 1
+}
+
+# save_project_remote <project> <remote>
+# persists the remote used for a project into config
+save_project_remote() {
+    config_set ".projects.\"$1\".remote" "$2"
+}
+
+### end remote resolution ###
+
 # ssh into remote and cd to project directory
 cmd_cd() {
     local remote="$1"; shift
