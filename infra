@@ -4,6 +4,44 @@ set -euo pipefail
 INFRA_DIR="$(dirname "$(readlink -f "${BASH_SOURCE[0]}")")"
 REMOTE_INFRA_DIR="\$HOME/infra"
 
+### begin dependencies ###
+
+command -v jq >/dev/null 2>&1 || {
+    >&2 echo "error: jq is required but not installed."
+    >&2 echo "  brew install jq    # macOS"
+    >&2 echo "  apt install jq     # debian/ubuntu"
+    exit 1
+}
+
+### end dependencies ###
+
+### begin config ###
+
+INFRA_CONFIG_DIR="${XDG_CONFIG_HOME:-$HOME/.config}/infra"
+INFRA_CONFIG_FILE="$INFRA_CONFIG_DIR/config.json"
+
+config_init() {
+    mkdir -p "$INFRA_CONFIG_DIR"
+    test -f "$INFRA_CONFIG_FILE" || echo '{}' > "$INFRA_CONFIG_FILE"
+}
+
+# config_get <jq_filter>
+# reads a value from config; prints nothing if key is missing
+config_get() {
+    config_init
+    jq -r "($1) // empty" "$INFRA_CONFIG_FILE"
+}
+
+# config_set <jq_filter> <value>
+# sets a value in config (atomic write via tmp file)
+config_set() {
+    config_init
+    local tmp; tmp="$(mktemp)"
+    jq "$1 = \$v" --arg v "$2" "$INFRA_CONFIG_FILE" > "$tmp" && mv "$tmp" "$INFRA_CONFIG_FILE"
+}
+
+### end config ###
+
 resolve_project_dir() {
     local project="$1"
     local project_dir="server/$project"
