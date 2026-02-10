@@ -127,24 +127,72 @@ save_project_remote() {
 
 ### end remote resolution ###
 
-# ssh into remote and cd to project directory
+### begin commands ###
+
+# infra cd [remote] [project]
 cmd_cd() {
-    local remote="$1"; shift
-    local project="$1"; shift
+    local remote="" project=""
+
+    case $# in
+        0)
+            project="$(resolve_alias "$(detect_project)")"
+            remote="$(resolve_remote "$project")"
+            ;;
+        1)
+            local candidate
+            candidate="$(resolve_alias "$1")"
+            if is_valid_project "$candidate"; then
+                project="$candidate"
+                remote="$(resolve_remote "$project")"
+            else
+                remote="$1"
+                project="$(resolve_alias "$(detect_project)")"
+            fi
+            ;;
+        2)
+            remote="$1"
+            project="$(resolve_alias "$2")"
+            ;;
+        *)
+            >&2 echo "usage: infra cd [remote] [project]"
+            exit 1
+            ;;
+    esac
+
     local project_dir; project_dir="$(resolve_project_dir "$project")"
-    
+    save_project_remote "$project" "$remote"
+
     ssh -t -o LogLevel=ERROR "$remote" "cd $REMOTE_INFRA_DIR/$project_dir && exec \$SHELL -l"
 }
 
-# run a script in the project directory on remote
+# infra exec [script] [args...]
+# infra exec [remote] [project] [script] [args...]   (backward compat)
 cmd_exec() {
-    local remote="$1"; shift
-    local project="$1"; shift
-    local script="$1"; shift
+    local remote="" project="" script=""
+
+    if test $# -ge 3 && { is_valid_project "$2" || is_valid_project "$(resolve_alias "$2")"; }; then
+        # old format: <remote> <project> <script> [args...]
+        remote="$1"; shift
+        project="$(resolve_alias "$1")"; shift
+        script="$1"; shift
+    elif test $# -ge 1; then
+        # new format: <script> [args...]
+        project="$(resolve_alias "$(detect_project)")"
+        remote="$(resolve_remote "$project")"
+        script="$1"; shift
+    else
+        >&2 echo "usage: infra exec [script] [args...]"
+        >&2 echo "       infra exec [remote] [project] [script] [args...]"
+        exit 1
+    fi
+
     local project_dir; project_dir="$(resolve_project_dir "$project")"
-    
+    save_project_remote "$project" "$remote"
+
     ssh -t -o LogLevel=ERROR "$remote" "\$SHELL -l -c 'cd $REMOTE_INFRA_DIR/$project_dir && ./$script $*'"
 }
+
+### end commands ###
 
 case "${1:-}" in
     cd)   shift; cmd_cd "$@" ;;
