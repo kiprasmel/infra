@@ -1,7 +1,7 @@
 # managed via $INFRA_REPO_URL
 
 server {
-	server_name $DOMAIN www.$DOMAIN;
+	server_name $DOMAIN $DOMAIN_SECONDARY;
 
 	# increase max request size for GitHub webhooks
 	client_max_body_size              0;

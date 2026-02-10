@@ -19,7 +19,8 @@ COMPOSE_FILEPATH="$REPO_ROOT/docker-compose.yml"
 cp "$DIRNAME/docker-compose.yml" "$COMPOSE_FILEPATH"
 replace_vars "$COMPOSE_FILEPATH" "PORT" "DOMAIN" "IMAGE_HOST"
 
-install_nginx_site_with_replace "pr-versions.kipras.org" "DOMAIN" "PORT"
+CERTBOT_ARGS="-d $DOMAIN_SECONDARY"
+install_nginx_site_with_replace "pr-versions.com" "DOMAIN" "DOMAIN_SECONDARY" "PORT"
 
 ENV_EXAMPLE="$REPO_ROOT/.env.example"
 
