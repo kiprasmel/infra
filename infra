@@ -165,9 +165,9 @@ cmd_cd() {
     ssh -t -o LogLevel=ERROR "$remote" "cd $REMOTE_INFRA_DIR/$project_dir && exec \$SHELL -l"
 }
 
-# infra exec [script] [args...]
-# infra exec [remote] [project] [script] [args...]   (backward compat)
-cmd_exec() {
+# infra run [script] [args...]
+# infra run [remote] [project] [script] [args...]   (backward compat)
+cmd_run() {
     local remote="" project="" script=""
 
     if test $# -ge 3 && { is_valid_project "$2" || is_valid_project "$(resolve_alias "$2")"; }; then
@@ -181,8 +181,8 @@ cmd_exec() {
         remote="$(resolve_remote "$project")"
         script="$1"; shift
     else
-        >&2 echo "usage: infra exec [script] [args...]"
-        >&2 echo "       infra exec [remote] [project] [script] [args...]"
+        >&2 echo "usage: infra run [script] [args...]"
+        >&2 echo "       infra run [remote] [project] [script] [args...]"
         exit 1
     fi
 
@@ -190,6 +190,35 @@ cmd_exec() {
     save_project_remote "$project" "$remote"
 
     ssh -t -o LogLevel=ERROR "$remote" "\$SHELL -l -c 'cd $REMOTE_INFRA_DIR/$project_dir && ./$script $*'"
+}
+
+# infra exec [command...]
+# infra exec [remote] [project] [command...]   (backward compat)
+# if the first arg is an executable script in the project dir, runs ./<script>;
+# otherwise runs the args as a raw command.
+cmd_exec() {
+    local remote="" project=""
+
+    if test $# -ge 3 && { is_valid_project "$2" || is_valid_project "$(resolve_alias "$2")"; }; then
+        # old format: <remote> <project> <command...>
+        remote="$1"; shift
+        project="$(resolve_alias "$1")"; shift
+    elif test $# -ge 1; then
+        # new format: <command...>
+        project="$(resolve_alias "$(detect_project)")"
+        remote="$(resolve_remote "$project")"
+    else
+        >&2 echo "usage: infra exec [command...]"
+        >&2 echo "       infra exec [remote] [project] [command...]"
+        exit 1
+    fi
+
+    local project_dir; project_dir="$(resolve_project_dir "$project")"
+    save_project_remote "$project" "$remote"
+
+    local first_arg="$1"
+
+    ssh -t -o LogLevel=ERROR "$remote" "\$SHELL -l -c 'cd $REMOTE_INFRA_DIR/$project_dir && if [ -x \"./$first_arg\" ]; then ./$*; else $*; fi'"
 }
 
 ### end commands ###
@@ -260,13 +289,15 @@ cmd_config() {
 case "${1:-}" in
     cd)     shift; cmd_cd "$@" ;;
     exec)   shift; cmd_exec "$@" ;;
+    run)    shift; cmd_run "$@" ;;
     config) shift; cmd_config "$@" ;;
     *)
         cat <<'EOF'
-usage: infra <cd|exec|config> [options]
+usage: infra <cd|exec|run|config> [options]
 
   infra cd [remote] [project]           ssh into project dir on remote
-  infra exec [script] [args...]         run script in project dir on remote
+  infra exec [command...]               run command in project dir on remote (auto-detects scripts)
+  infra run [script] [args...]          run project script in project dir on remote
   infra config show                     show current config
   infra config set default-remote <r>   set global default remote
   infra config set remote <proj> <r>    set per-project remote
