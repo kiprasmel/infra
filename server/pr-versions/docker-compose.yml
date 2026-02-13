@@ -13,6 +13,7 @@ services:
     volumes:
       - ../volume/.image-cache:/usr/src/app/.image-cache
       - ../volume/.local:/usr/src/app/.local
+      - ../volume/data:/usr/src/app/data
     restart: unless-stopped
     healthcheck:
       test: ["CMD-SHELL", "curl -f http://localhost:$PORT/ || exit 1"]
